@@ -28,5 +28,8 @@
     "url": "https://github.com/jeanmaried/Project_4/issues"
   },
   "homepage": "https://github.com/jeanmaried/Project_4#readme",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  },
   "description": ""
 }

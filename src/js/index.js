@@ -1,7 +1,10 @@
 /*import Cart from "./cart";*/
 
 import request from "./bestbuy";
+import carousel from "./carousel";
 
+console.log(request)
+console.log(carousel)
 
 export default class App{
 	constructor(){

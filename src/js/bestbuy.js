@@ -14,4 +14,3 @@ export default obj => {
         xhr.send(obj.body);
     });
 };
-
