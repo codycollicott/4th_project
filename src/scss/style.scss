@@ -1,5 +1,17 @@
 $background-color: #9bddb8;
 
+body{
+	font-size: 20px;
+}
+
+.cart{
+	font-size: 3rem;
+    color: white;
+    padding: 1rem;
+    border-radius: 3rem;
+    background-color: #80ce8d;
+}
+
 header{
 	background-color: $background-color;
 }
@@ -16,6 +28,3 @@ footer{
 	padding: 4rem;
 }
 
-img{
-	size: 20%;
-}
