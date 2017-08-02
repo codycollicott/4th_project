@@ -1,9 +1,7 @@
 /*import Cart from "./cart";*/
-import Wallop from 'Wallop';
 import request from "./bestbuy";
 import {carousel} from "./carousel";
-// import prodUtil from "./productUtil"
-
+import productUtil from "./productUtil";
 
 
 // $(".button").on("click", function(){
@@ -41,11 +39,11 @@ export default class App{
 
 	
 	atcListeners () {
+
 		let test = document.getElementsByClassName('atc');
 		for (var i = 0; i < test.length; i++){
-			test[i].addEventListener("click", function() {
-    			console.log('Hello');
-    			// initialize prodUtil instead of console.log in productUtil
+			test[i].addEventListener("click", () =>  {
+    			new productUtil();
 			})
 		}
     }
@@ -59,7 +57,7 @@ export default class App{
     		this.initBBCall();
 
     	})
-    	
+
 
     	};
 

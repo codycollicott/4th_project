@@ -1,242 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/**
-* Wallop.js
-*
-* @fileoverview Minimal JS library to show & hide things
-*
-* @author Pedro Duarte
-* @author http://pedroduarte.me/wallop
-*
-*/
-(function(global){
-  function Wallop(selector, options) {
-    if (!selector) { throw new Error('Missing selector. Refer to Usage documentation: https://github.com/peduarte/wallop#javascript'); }
-
-    for (var i = 0; i < selectorPool.length; i++) {
-      if (selectorPool[i] === selector) {
-        throw new Error('An instance of Wallop with this selector already exists.');
-      }
-    }
-
-    this.options = {
-      buttonPreviousClass: 'Wallop-buttonPrevious',
-      buttonNextClass: 'Wallop-buttonNext',
-      itemClass: 'Wallop-item',
-      currentItemClass: 'Wallop-item--current',
-      showPreviousClass: 'Wallop-item--showPrevious',
-      showNextClass: 'Wallop-item--showNext',
-      hidePreviousClass: 'Wallop-item--hidePrevious',
-      hideNextClass: 'Wallop-item--hideNext',
-      carousel: true
-    };
-
-    // Whitelist elements which contain `length`
-    this.whitelist = {
-      'form': true
-    };
-
-    if (selector.length > 0 && !this.whitelist[selector]) {
-      throw new Error('Selector cannot be an array, Refer to Usage documentation: https://github.com/peduarte/wallop#javascript');
-    } else {
-      this.$selector = selector;
-    }
-
-    this.options = extend(this.options, options);
-    this.event = null;
-
-    // "Global vars"
-    this.reset();
-    this.buttonPrevious = this.$selector.querySelector(' .' + this.options.buttonPreviousClass);
-    this.buttonNext = this.$selector.querySelector(' .' + this.options.buttonNextClass);
-
-    this.bindEvents();
-    this.createCustomEvent();
-
-    // If there is no active item, start at 0
-    if (this.currentItemIndex === -1) {
-      this.currentItemIndex = 0;
-      addClass(this.allItemsArray[this.currentItemIndex], this.options.currentItemClass);
-    }
-
-    // Update button states to make sure the correct state is set on initialization
-    this.updateButtonStates();
-
-    // Wrapped in timeout function so event can
-    // be listened from outside at anytime
-    var _this = this;
-    setTimeout(function() {
-      _this.event.detail.currentItemIndex = _this.currentItemIndex;
-      _this.$selector.dispatchEvent(_this.event);
-    }, 0);
-  }
-
-  var selectorPool = [];
-
-  var WS = Wallop.prototype;
-
-  // Update prev/next disabled attribute
-  WS.updateButtonStates = function () {
-    if ((!this.buttonPrevious && !this.buttonNext) || this.options.carousel) { return; }
-
-    if (this.currentItemIndex === this.lastItemIndex) {
-      this.buttonNext.setAttribute('disabled', 'disabled');
-    } else if (this.currentItemIndex === 0) {
-      this.buttonPrevious.setAttribute('disabled', 'disabled');
-    }
-  };
-
-  // Reset all settings by removing classes and attributes added by goTo() & updateButtonStates()
-  WS.removeAllHelperSettings = function () {
-    removeClass(this.allItemsArray[this.currentItemIndex], this.options.currentItemClass);
-    removeClass($$(this.options.hidePreviousClass, this.$selector), this.options.hidePreviousClass);
-    removeClass($$(this.options.hideNextClass, this.$selector), this.options.hideNextClass);
-    removeClass($$(this.options.showPreviousClass, this.$selector), this.options.showPreviousClass);
-    removeClass($$(this.options.showNextClass, this.$selector), this.options.showNextClass);
-
-    if (!this.buttonPrevious && !this.buttonNext) { return; }
-
-    this.buttonPrevious.removeAttribute('disabled');
-    this.buttonNext.removeAttribute('disabled');
-  };
-
-  // Method to add classes to the right elements depending on the index passed
-  WS.goTo = function (index) {
-    if (index === this.currentItemIndex) { return; }
-
-    // Fix the index if it's out of bounds and carousel is enabled
-    index = index === -1 && this.options.carousel ? this.lastItemIndex : index;
-    index = index === this.lastItemIndex + 1 && this.options.carousel ? 0 : index;
-
-    // Exit when index is out of bounds
-    if (index < 0 || index > this.lastItemIndex) { return; }
-
-    this.removeAllHelperSettings();
-
-    var isForwards = (index > this.currentItemIndex || index === 0 && this.currentItemIndex === this.lastItemIndex) && !(index === this.lastItemIndex && this.currentItemIndex === 0);
-    addClass(this.allItemsArray[this.currentItemIndex], isForwards ? this.options.hidePreviousClass : this.options.hideNextClass);
-    addClass(this.allItemsArray[index], this.options.currentItemClass + ' ' + (isForwards ? this.options.showNextClass : this.options.showPreviousClass));
-
-    this.currentItemIndex = index;
-
-    this.updateButtonStates();
-
-    this.event.detail.currentItemIndex = this.currentItemIndex;
-    this.$selector.dispatchEvent(this.event);
-  };
-
-  // Previous item handler
-  WS.previous = function () {
-    this.goTo(this.currentItemIndex - 1);
-  };
-
-  // Next item handler
-  WS.next = function () {
-    this.goTo(this.currentItemIndex + 1);
-  };
-
-  // Update global variables
-  WS.reset = function () {
-    this.allItemsArray = Array.prototype.slice.call(this.$selector.querySelectorAll(' .' + this.options.itemClass));
-    this.currentItemIndex = this.allItemsArray.indexOf(this.$selector.querySelector(' .' + this.options.currentItemClass));
-    this.lastItemIndex = this.allItemsArray.length - 1;
-  };
-
-  // Attach click handlers
-  WS.bindEvents = function () {
-    selectorPool.push(this.$selector);
-
-    var _this = this;
-
-    if (this.buttonPrevious) {
-      this.buttonPrevious.addEventListener('click', function (event) {
-        event.preventDefault();
-        _this.previous();
-      });
-    }
-
-    if (this.buttonNext) {
-      this.buttonNext.addEventListener('click', function (event) {
-        event.preventDefault();
-        _this.next();
-      });
-    }
-
-  };
-
-  // Method to bind custom event
-  WS.on = function (eventName, callback) {
-    this.$selector.addEventListener(eventName, callback, false);
-  };
-
-  // Method to unbind custom event
-  WS.off = function (eventName, callback) {
-    this.$selector.removeEventListener(eventName, callback, false);
-  };
-
-  // Create custom Event
-  WS.createCustomEvent = function () {
-    var _this = this;
-    this.event = new CustomEvent('change', {
-      detail: {
-        wallopEl: _this.$selector,
-        currentItemIndex: Number(_this.currentItemIndex)
-      },
-      bubbles: true,
-      cancelable: true
-    });
-  };
-
-  // Helper functions
-  function $$(element, container) {
-    if (!element) { return; }
-    if (!container) {
-      container = document;
-    }
-    return container.querySelector('.' + element);
-  }
-
-  function addClass(element, className) {
-    if (!element) { return; }
-    element.className = (element.className + ' ' + className).trim();
-  }
-
-  function removeClass(element, className) {
-    if (!element) { return; }
-    element.className = element.className.replace(className, '').trim();
-  }
-
-  function extend(origOptions, userOptions){
-    var extendOptions = {}, attrname;
-    for (attrname in origOptions) { extendOptions[attrname] = origOptions[attrname]; }
-    for (attrname in userOptions) { extendOptions[attrname] = userOptions[attrname]; }
-    return extendOptions;
-  }
-
-  // Pollyfill for CustomEvent() Constructor - thanks to Internet Explorer
-  // https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent#Polyfill
-  function CustomEvent(event, params) {
-    params = params || { bubbles: false, cancelable: false, detail: undefined };
-    var evt = document.createEvent('CustomEvent');
-    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-    return evt;
-  }
-
-  CustomEvent.prototype = window.CustomEvent ? window.CustomEvent.prototype : {};
-  window.CustomEvent = CustomEvent;
-
-  // Exports to multiple environments
-  if(typeof define === 'function' && define.amd){ //AMD
-    define(function () { return Wallop; });
-  } else if (typeof module !== 'undefined' && module.exports){ //node
-    module.exports = Wallop;
-  } else { // browser
-    // use string because of Google closure compiler ADVANCED_MODE
-    /* jslint sub:true */
-    global['Wallop'] = Wallop;
-  }
-}(this));
-
-},{}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -262,7 +24,7 @@ exports.default = function (obj) {
     });
 };
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -280,8 +42,9 @@ var carousel = exports.carousel = function carousel(data) {
 			// let category = data.products[i].categoryPath[1].name;
 			var price = data.products[i].regularPrice;
 			var description = data.products[i].name;
+			var sku = data.products[i].sku;
 			var div = $('<div></div>');
-			div.html('<div>' + manu + '</div>' + '<div>' + description + '</div>' + '<img src=' + image + '>' + '<div>' + price + '</div>' + '<button class="atc" data-sku="" data-price="">' + "ADD TO CART" + '</div>');
+			div.html('<div>' + manu + '</div>' + '<div>' + description + '</div>' + '<img src=' + image + '>' + '<div>' + price + '</div>' + '<button class="atc" data-sku="' + sku + '" data-price="' + price + '">' + "ADD TO CART" + '</div>');
 			$("#here").append(div);
 		} else {
 			break;
@@ -289,7 +52,7 @@ var carousel = exports.carousel = function carousel(data) {
 	};
 };
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -299,22 +62,19 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*import Cart from "./cart";*/
 
 
-var _Wallop = require("Wallop");
-
-var _Wallop2 = _interopRequireDefault(_Wallop);
-
 var _bestbuy = require("./bestbuy");
 
 var _bestbuy2 = _interopRequireDefault(_bestbuy);
 
 var _carousel = require("./carousel");
 
+var _productUtil = require("./productUtil");
+
+var _productUtil2 = _interopRequireDefault(_productUtil);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-// import prodUtil from "./productUtil"
-
 
 // $(".button").on("click", function(){
 // 	var selected = $(".button").val();
@@ -351,11 +111,11 @@ var App = function () {
 	}, {
 		key: "atcListeners",
 		value: function atcListeners() {
+
 			var test = document.getElementsByClassName('atc');
 			for (var i = 0; i < test.length; i++) {
 				test[i].addEventListener("click", function () {
-					console.log('Hello');
-					// initialize prodUtil instead of console.log in productUtil
+					new _productUtil2.default();
 				});
 			}
 		}
@@ -383,4 +143,37 @@ exports.default = App;
 
 var x = new App();
 
-},{"./bestbuy":2,"./carousel":3,"Wallop":1}]},{},[4]);
+},{"./bestbuy":1,"./carousel":2,"./productUtil":4}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var productUtil = function () {
+	function productUtil() {
+		_classCallCheck(this, productUtil);
+
+		this.addToCart();
+	}
+
+	_createClass(productUtil, [{
+		key: 'addToCart',
+		value: function addToCart() {
+			var price = $(this).data('price');
+			var data = $(this).data('sku');
+			console.log(price, data);
+		}
+	}]);
+
+	return productUtil;
+}();
+
+exports.default = productUtil;
+;
+
+},{}]},{},[3]);
