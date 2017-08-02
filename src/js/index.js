@@ -42,8 +42,11 @@ export default class App{
 
 		let test = document.getElementsByClassName('atc');
 		for (var i = 0; i < test.length; i++){
-			test[i].addEventListener("click", () =>  {
-    			new productUtil();
+			test[i].addEventListener("click", (e) =>  {
+    			let sku = e.target.getAttribute("data-sku");
+    			let price = e.target.getAttribute("data-price");
+    			new productUtil().addToCart(sku,price);
+ 
 			})
 		}
     }

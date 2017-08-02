@@ -114,8 +114,10 @@ var App = function () {
 
 			var test = document.getElementsByClassName('atc');
 			for (var i = 0; i < test.length; i++) {
-				test[i].addEventListener("click", function () {
-					new _productUtil2.default();
+				test[i].addEventListener("click", function (e) {
+					var sku = e.target.getAttribute("data-sku");
+					var price = e.target.getAttribute("data-price");
+					new _productUtil2.default().addToCart(sku, price);
 				});
 			}
 		}
@@ -144,7 +146,7 @@ exports.default = App;
 var x = new App();
 
 },{"./bestbuy":1,"./carousel":2,"./productUtil":4}],4:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -157,16 +159,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var productUtil = function () {
 	function productUtil() {
 		_classCallCheck(this, productUtil);
-
-		this.addToCart();
 	}
 
 	_createClass(productUtil, [{
-		key: 'addToCart',
-		value: function addToCart() {
-			var price = $(this).data('price');
-			var data = $(this).data('sku');
-			console.log(price, data);
+		key: "addToCart",
+		value: function addToCart(sku, price) {
+
+			console.log(price, sku);
 		}
 	}]);
 
