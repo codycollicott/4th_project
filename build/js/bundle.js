@@ -263,25 +263,26 @@ exports.default = function (obj) {
 };
 
 },{}],3:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 var carousel = exports.carousel = function carousel(data) {
-	for (var i = 0; i < data.products.length; i++) {
-		console.log(i);
 
-		if (data.products[i].categoryPath[1].name.length) {
+	document.getElementById("here").innerHTML = "";
+
+	for (var i = 0; i < data.products.length; i++) {
+
+		if (data.products[i].largeImage.length) {
 			var image = data.products[i].largeImage;
 			var manu = data.products[i].manufacturer;
 			// let category = data.products[i].categoryPath[1].name;
 			var price = data.products[i].regularPrice;
 			var description = data.products[i].name;
-			console.log(description);
 			var div = $('<div></div>');
-			div.html('<div>' + manu + '</div>' + '<div>' + description + '</div>' + '<img src=' + image + '>' + '<div>' + price + '</div>' + '<button>' + "ADD TO CART" + '</div>');
-			$(".here").append(div);
+			div.html('<div>' + manu + '</div>' + '<div>' + description + '</div>' + '<img src=' + image + '>' + '<div>' + price + '</div>' + '<button class="atc" data-sku="" data-price="">' + "ADD TO CART" + '</div>');
+			$("#here").append(div);
 		} else {
 			break;
 		};
@@ -312,26 +313,65 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-console.log(_carousel.carousel);
+// import prodUtil from "./productUtil"
+
+
+// $(".button").on("click", function(){
+// 	var selected = $(".button").val();
+
+// (condition=new&(categoryPath.id=abcat0502000)) laptops
+// (condition=new&(categoryPath.id=pcmcat209400050001)) cell phones
+// (condition=new&(categoryPath.id=abcat0204000)) headphones
+// (condition=new&(categoryPath.id=abcat0101000)) TVs
 
 var App = function () {
 	function App() {
 		_classCallCheck(this, App);
 
+		this.cat_clicked = "((categoryPath.id=abcat0502000))";
 		this.initBBCall();
+		this.catListeners();
 	}
 
 	_createClass(App, [{
 		key: "initBBCall",
 		value: function initBBCall() {
-			(0, _bestbuy2.default)({ url: "https://api.bestbuy.com/v1/products(condition=new&(categoryPath.id=abcat0502000))", api: "8ccddf4rtjz5k5btqam84qak" }).then(function (data) {
+			var _this = this;
+
+			(0, _bestbuy2.default)({ url: "https://api.bestbuy.com/v1/products" + this.cat_clicked, api: "8ccddf4rtjz5k5btqam84qak" }).then(function (data) {
 				(0, _carousel.carousel)(data);
+				_this.atcListeners();
 
 				/*  carosel with products */
 			}).catch(function (error) {
 				console.log("warning Christopher Robins... Error");
 				console.log(error);
 			});
+		}
+	}, {
+		key: "atcListeners",
+		value: function atcListeners() {
+			var test = document.getElementsByClassName('atc');
+			for (var i = 0; i < test.length; i++) {
+				test[i].addEventListener("click", function () {
+					console.log('Hello');
+					// initialize prodUtil instead of console.log in productUtil
+				});
+			}
+		}
+	}, {
+		key: "catListeners",
+		value: function catListeners() {
+			var _this2 = this;
+
+			var test_two = document.getElementsByClassName('categories');
+			for (var i = 0; i < test_two.length; i++) {
+				test_two[i].addEventListener('click', function (e) {
+					_this2.cat_clicked = e.target.value;
+					console.log(_this2.cat_clicked);
+					_this2.initBBCall();
+				});
+			};
 		}
 	}]);
 
