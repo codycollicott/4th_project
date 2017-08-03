@@ -76,14 +76,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// $(".button").on("click", function(){
-// 	var selected = $(".button").val();
-
-// (condition=new&(categoryPath.id=abcat0502000)) laptops
-// (condition=new&(categoryPath.id=pcmcat209400050001)) cell phones
-// (condition=new&(categoryPath.id=abcat0204000)) headphones
-// (condition=new&(categoryPath.id=abcat0101000)) TVs
-
 var App = function () {
 	function App() {
 		_classCallCheck(this, App);
@@ -163,8 +155,7 @@ var productUtil = function () {
 
 	_createClass(productUtil, [{
 		key: "addToCart",
-		value: function addToCart(sku, price) {
-
+		value: function addToCart(price, sku) {
 			console.log(price, sku);
 		}
 	}]);

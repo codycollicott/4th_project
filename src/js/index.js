@@ -3,15 +3,6 @@ import request from "./bestbuy";
 import {carousel} from "./carousel";
 import productUtil from "./productUtil";
 
-
-// $(".button").on("click", function(){
-// 	var selected = $(".button").val();
-
-// (condition=new&(categoryPath.id=abcat0502000)) laptops
-// (condition=new&(categoryPath.id=pcmcat209400050001)) cell phones
-// (condition=new&(categoryPath.id=abcat0204000)) headphones
-// (condition=new&(categoryPath.id=abcat0101000)) TVs
-
 export default class App{
 	constructor(){
 		this.cat_clicked = "((categoryPath.id=abcat0502000))";

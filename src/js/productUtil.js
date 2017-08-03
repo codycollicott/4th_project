@@ -1,12 +1,14 @@
 export default class productUtil{
 	constructor (){
 		
+		
 	}
 	
-	addToCart (sku,price){
-		
+	addToCart (price, sku){
 		console.log(price, sku);
+
 	}
+
 
 };
 
