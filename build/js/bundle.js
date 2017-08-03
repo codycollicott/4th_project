@@ -155,8 +155,20 @@ var productUtil = function () {
 
 	_createClass(productUtil, [{
 		key: "addToCart",
-		value: function addToCart(price, sku) {
-			console.log(price, sku);
+		value: function addToCart(sku, price) {
+			var product = { price: price, quantity: 1 };
+
+			function store(sku, product) {
+				if (sessionStorage.getItem(sku) == undefined) {
+					sessionStorage.setItem(sku, JSON.stringify(product));
+				} else {
+					var oldValue = JSON.parse(sessionStorage.getItem(sku));
+					oldValue.quantity += product.quantity;
+					sessionStorage.setItem(sku, JSON.stringify(oldValue));
+				}
+			}
+
+			store(sku, product);
 		}
 	}]);
 
