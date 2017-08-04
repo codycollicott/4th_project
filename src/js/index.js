@@ -8,7 +8,6 @@ export default class App{
 		this.cat_clicked = "((categoryPath.id=abcat0502000))";
 		this.initBBCall();
 		this.catListeners();
-
 	}
 
 	
@@ -26,7 +25,7 @@ export default class App{
 			console.log("warning Christopher Robins... Error");
 			console.log(error);
 		});
-	}
+	};
 
 	
 	atcListeners () {
@@ -40,7 +39,7 @@ export default class App{
  
 			})
 		}
-    }
+    };
 
     catListeners () {
     	let test_two = document.getElementsByClassName('categories');
@@ -55,7 +54,7 @@ export default class App{
 
     	};
 
-    }
+    };
 	
 };
 

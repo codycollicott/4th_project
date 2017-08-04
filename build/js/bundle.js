@@ -138,7 +138,7 @@ exports.default = App;
 var x = new App();
 
 },{"./bestbuy":1,"./carousel":2,"./productUtil":4}],4:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -154,21 +154,42 @@ var productUtil = function () {
 	}
 
 	_createClass(productUtil, [{
-		key: "addToCart",
+		key: 'addToCart',
 		value: function addToCart(sku, price) {
+
 			var product = { price: price, quantity: 1 };
 
-			function store(sku, product) {
-				if (sessionStorage.getItem(sku) == undefined) {
-					sessionStorage.setItem(sku, JSON.stringify(product));
-				} else {
-					var oldValue = JSON.parse(sessionStorage.getItem(sku));
-					oldValue.quantity += product.quantity;
-					sessionStorage.setItem(sku, JSON.stringify(oldValue));
-				}
+			if (sessionStorage.getItem(sku) == undefined) {
+				sessionStorage.setItem(sku, JSON.stringify(product));
+			} else {
+				var oldValue = JSON.parse(sessionStorage.getItem(sku));
+				var newValue = oldValue.quantity + 1;
+				product.quantity = newValue;
+				sessionStorage.setItem(sku, JSON.stringify(product));
 			}
 
-			store(sku, product);
+			this.cartList();
+			this.getcartItems();
+		}
+	}, {
+		key: 'getcartItems',
+		value: function getcartItems() {
+			var totalPrice = 0;
+			var totalQny = 0;
+			for (var key in sessionStorage) {
+				var x = JSON.parse(sessionStorage[key]);
+				totalQny = totalQny + x.quantity;
+				document.getElementById('cartnum').innerHTML = totalQny;
+				totalPrice += x.price * x.quantity;
+				document.getElementById('price').innerHTML = totalPrice;
+			}
+		}
+	}, {
+		key: 'cartList',
+		value: function cartList() {
+			var cartItem = $('<div class="itemRows"></div');
+			cartItem.html('<p>' + 'SKU' + '</p>' + '<div>' + '</div>' + '<p>' + 'QUANTITY' + '</p>' + '<input type="text" value="0">' + '<p>' + 'TOTAL' + '</p>' + '<div>' + '</div>' + '<button type="button">' + 'UPDATE' + '</button>' + '<button type="button">' + 'REMOVE' + '</button>');
+			$('#listItems').append(cartItem);
 		}
 	}]);
 
@@ -176,6 +197,5 @@ var productUtil = function () {
 }();
 
 exports.default = productUtil;
-;
 
 },{}]},{},[3]);

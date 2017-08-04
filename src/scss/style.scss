@@ -1,30 +1,35 @@
 $background-color: #9bddb8;
 
 body{
-	font-size: 20px;
+	font-size: 10px;
 }
 
-.cart{
-	font-size: 3rem;
-    color: white;
-    padding: 1rem;
-    border-radius: 3rem;
-    background-color: #80ce8d;
-}
+// .cart{
+// 	font-size: 3rem;
+//     color: white;
+//     padding: 1rem;
+//     border-radius: 3rem;
+//     background-color: #80ce8d;
+// }
 
 header{
 	background-color: $background-color;
 }
 
+.itemRows{
+	display: flex;
+	flex-direction: row;
+}
+
 .shop{
-	border-top: 3rem solid #9bddb8;
+	border-top: .1rem solid #9bddb8;
 }
 
 footer{
 	background-color: grey;
 }
 
-.padding{
-	padding: 4rem;
-}
+// .padding{
+// 	padding: 4rem;
+// }
 
