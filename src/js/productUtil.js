@@ -32,12 +32,15 @@ export default class productUtil{
 			document.getElementById('cartnum').innerHTML= totalQny;
 			totalPrice += x.price * x.quantity;
 			document.getElementById('price').innerHTML= totalPrice;
+			// let itemCount = x.quantity;
+			// let itemPrice = x.price;
+			// document.getElementsByClassName("itemSku").innerHTML= "";
 			}
-		}
+		};
 
 	cartList(){
 		let cartItem = $('<div class="itemRows"></div');
-		cartItem.html('<p>'+'SKU'+'</p>'+'<div>'+'</div>'+
+		cartItem.html('<p class="itemSku">'+'SKU'+'</p>'+'<div>'+'</div>'+
 			'<p>'+'QUANTITY'+'</p>'+'<input type="text" value="0">'+
 			'<p>'+'TOTAL'+'</p>'+'<div>'+'</div>'+
 			'<button type="button">'+'UPDATE'+'</button>'+'<button type="button">'+'REMOVE'+'</button>');

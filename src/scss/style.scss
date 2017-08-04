@@ -19,6 +19,8 @@ header{
 .itemRows{
 	display: flex;
 	flex-direction: row;
+	justify-content: space-around;
+    width: 30rem;
 }
 
 .shop{
