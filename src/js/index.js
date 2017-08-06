@@ -46,7 +46,6 @@ export default class App{
     	for (var i = 0; i < test_two.length; i++){
     	test_two[i].addEventListener('click', (e) => {
     		this.cat_clicked = e.target.value;
-    		console.log(this.cat_clicked);
     		this.initBBCall();
 
     	})

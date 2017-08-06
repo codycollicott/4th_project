@@ -39,7 +39,6 @@ var carousel = exports.carousel = function carousel(data) {
 		if (data.products[i].largeImage.length) {
 			var image = data.products[i].largeImage;
 			var manu = data.products[i].manufacturer;
-			// let category = data.products[i].categoryPath[1].name;
 			var price = data.products[i].regularPrice;
 			var description = data.products[i].name;
 			var sku = data.products[i].sku;
@@ -122,7 +121,6 @@ var App = function () {
 			for (var i = 0; i < test_two.length; i++) {
 				test_two[i].addEventListener('click', function (e) {
 					_this2.cat_clicked = e.target.value;
-					console.log(_this2.cat_clicked);
 					_this2.initBBCall();
 				});
 			};
@@ -168,8 +166,15 @@ var productUtil = function () {
 				sessionStorage.setItem(sku, JSON.stringify(product));
 			}
 
-			this.cartList();
+			this.cartList(sku, product);
 			this.getcartItems();
+		}
+	}, {
+		key: 'cartList',
+		value: function cartList(sku, product) {
+			var cartItem = $('<div class="itemRows"></div>');
+			cartItem.html('<div>' + 'SKU' + '</div>' + '<div>' + sku + '</div>' + '<div>' + 'QUANTITY' + '</div>' + '<input type="number" value="' + product.quantity + '">' + '<div>' + 'TOTAL' + '</div>' + '<div>' + '</div>' + '<button type="button">' + 'UPDATE' + '</button>' + '<button type="button">' + 'REMOVE' + '</button>');
+			$('#listItems').append(cartItem);
 		}
 	}, {
 		key: 'getcartItems',
@@ -182,17 +187,7 @@ var productUtil = function () {
 				document.getElementById('cartnum').innerHTML = totalQny;
 				totalPrice += x.price * x.quantity;
 				document.getElementById('price').innerHTML = totalPrice;
-				// let itemCount = x.quantity;
-				// let itemPrice = x.price;
-				// document.getElementsByClassName("itemSku").innerHTML= "";
 			}
-		}
-	}, {
-		key: 'cartList',
-		value: function cartList() {
-			var cartItem = $('<div class="itemRows"></div');
-			cartItem.html('<p class="itemSku">' + 'SKU' + '</p>' + '<div>' + '</div>' + '<p>' + 'QUANTITY' + '</p>' + '<input type="text" value="0">' + '<p>' + 'TOTAL' + '</p>' + '<div>' + '</div>' + '<button type="button">' + 'UPDATE' + '</button>' + '<button type="button">' + 'REMOVE' + '</button>');
-			$('#listItems').append(cartItem);
 		}
 	}]);
 

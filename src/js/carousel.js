@@ -7,7 +7,6 @@ export const carousel = (data) => {
 			if (data.products[i].largeImage.length){
 				let image = data.products[i].largeImage;
 				let manu = data.products[i].manufacturer;
-				// let category = data.products[i].categoryPath[1].name;
 				let price = data.products[i].regularPrice;
 				let description = data.products[i].name;
 				let sku = data.products[i].sku;

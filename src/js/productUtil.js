@@ -18,10 +18,20 @@ export default class productUtil{
 			sessionStorage.setItem(sku,JSON.stringify(product));
 		}
 
-		this.cartList();
+		this.cartList(sku,product);
 		this.getcartItems();
 
 	};
+
+	cartList(sku, product){
+		let cartItem = $('<div class="itemRows"></div>');
+		cartItem.html('<div>'+'SKU'+'</div>'+'<div>'+sku+'</div>'+
+			'<div>'+'QUANTITY'+'</div>'+'<input type="number" value="'+product.quantity+'">'+
+			'<div>'+'TOTAL'+'</div>'+'<div>'+'</div>'+
+			'<button type="button">'+'UPDATE'+'</button>'+'<button type="button">'+'REMOVE'+'</button>');
+		$('#listItems').append(cartItem);
+		
+	}
 
 	getcartItems(){
 		let totalPrice = 0;
@@ -32,20 +42,9 @@ export default class productUtil{
 			document.getElementById('cartnum').innerHTML= totalQny;
 			totalPrice += x.price * x.quantity;
 			document.getElementById('price').innerHTML= totalPrice;
-			// let itemCount = x.quantity;
-			// let itemPrice = x.price;
-			// document.getElementsByClassName("itemSku").innerHTML= "";
 			}
 		};
 
-	cartList(){
-		let cartItem = $('<div class="itemRows"></div');
-		cartItem.html('<p class="itemSku">'+'SKU'+'</p>'+'<div>'+'</div>'+
-			'<p>'+'QUANTITY'+'</p>'+'<input type="text" value="0">'+
-			'<p>'+'TOTAL'+'</p>'+'<div>'+'</div>'+
-			'<button type="button">'+'UPDATE'+'</button>'+'<button type="button">'+'REMOVE'+'</button>');
-		$('#listItems').append(cartItem);
-	}
 }
 
 
